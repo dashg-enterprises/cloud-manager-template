@@ -1,10 +1,20 @@
-# cloud-creds
+# cloud-manager
 
-Instructions on how to get your AWS access keys
+> We are working hard to automate these steps, but for the time being they are manual and absolutely necessary. 
+
+Before your cloudscape can be initialized, **you will need to complete the following steps**.
+
+---
+
+## Adding your AWS access keys
+
+Navigate to AWS and generate keys. 
+
+Navigate to `cloud-manager` [secrets](https://github.com/dashg-labs/cloud-manager/settings/secrets/actions) and update the placeholders with your new keys.
+
+> AWS_ACCESS_KEY is the access key.
+> AWS_SECRET_KEY is the secret key.
+
+## Creating a PAT for cross-repo actions
 
 Instructions on how to set up PAT
-
-Instructions on where to save both in this repos secret
-
-
-<button>click here to update</button>
