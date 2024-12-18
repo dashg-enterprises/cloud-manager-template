@@ -10,7 +10,7 @@ Before your cloudscape can be initialized, **you will need to complete the follo
 
 Navigate to AWS and generate keys. 
 
-Navigate to `cloud-manager` [secrets](https://github.com/dashg-labs/cloud-manager/settings/secrets/actions) and update the placeholders with your new keys.
+Navigate to `cloud-manager` secrets and update the placeholders with your new keys.
 
 > AWS_ACCESS_KEY is the access key.
 > AWS_SECRET_KEY is the secret key.
