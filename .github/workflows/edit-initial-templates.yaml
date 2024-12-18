@@ -3,11 +3,8 @@ name: Edit Initial Templates
 on: 
   workflow_dispatch:
     inputs:
-      GIT_ORGANIZAION_NAME:
-        description: 'Name of the organization in GitHub'
-        type: string
       ORGANIZAION_NAME:
-        description: 'Name of the organization to set in the cloud-deployment and cloud-infrastructure templates'
+        description: 'Name of the organization in GitHub that will be set in the cloud-deployment and cloud-infrastructure templates'
         type: string
 
 jobs:    
@@ -22,7 +19,7 @@ jobs:
         name: Edit cloud-deployment HCL for root
         with: 
           GITHUB_TOKEN: ${{ secrets.CLOUD_MANAGER_PAT }}
-          REPO_TO_EDIT: ${{ inputs.GIT_ORGANIZATION_NAME }}/cloud-deployment
+          REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-deployment
           FILE_TO_EDIT: live/aws/terragrunt.hcl
           FIELD_TO_EDIT: locals.organization_name
           VALUE_TO_SET: ${{ inputs.ORGANIZATION_NAME }}
@@ -32,7 +29,7 @@ jobs:
         name: Edit cloud-deployment HCL for cloudscape
         with: 
           GITHUB_TOKEN: ${{ secrets.CLOUD_MANAGER_PAT }}
-          REPO_TO_EDIT: ${{ inputs.GIT_ORGANIZATION_NAME }}/cloud-deployment
+          REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-deployment
           FILE_TO_EDIT: live/aws/cloudscape/terragrunt.hcl
           FIELD_TO_EDIT: locals.organization_name
           VALUE_TO_SET: ${{ inputs.ORGANIZATION_NAME }}
@@ -42,7 +39,7 @@ jobs:
         name: Edit cloud-infrastructure HCL for cloudscape
         with: 
           GITHUB_TOKEN: ${{ secrets.CLOUD_MANAGER_PAT }}
-          REPO_TO_EDIT: ${{ inputs.GIT_ORGANIZATION_NAME }}/cloud-infrastructure
+          REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-infrastructure
           FILE_TO_EDIT: iac/aws/cloudscape/locals.hcl
           FIELD_TO_EDIT: locals.organization_name
           VALUE_TO_SET: ${{ inputs.ORGANIZATION_NAME }}
