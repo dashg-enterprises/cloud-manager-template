@@ -1,0 +1,40 @@
+name: Edit Template
+
+on: 
+  workflow_dispatch:
+    inputs:
+      REPO_TO_EDIT:
+          description: 'Path to the repository to edit within the organization'
+          default: dashg-enterprises/cloud-infrastructure
+          type: string
+      FILE_TO_EDIT:
+          description: 'Path to the HCL file to edit within the repo'
+          default: iac/aws/cloudscape/locals.hcl
+          type: string
+      FIELD_TO_EDIT:
+          description: 'Name of the field to edit in the HCL file'
+          default: locals.organization_name
+          type: string
+      VALUE_TO_SET:
+          description: 'Value to set to the field that will be edited'
+          default: dashg-enterprises
+          type: string
+
+jobs:    
+  edit-template:
+    name: Edit Templated Repository
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout cloud-manager
+      - uses: ./.github/workflows/actions/hcl-edit-and-merge
+        name: Edit HCL
+        with: 
+          GITHUB_TOKEN: ${{ secrets.CLOUD_MANAGER_PAT }}
+          REPO_TO_EDIT: ${{ inputs.REPO_TO_EDIT }}
+          FILE_TO_EDIT: ${{ inputs.FILE_TO_EDIT }}
+          FIELD_TO_EDIT: ${{ inputs.FIELD_TO_EDIT }}
+          VALUE_TO_SET: ${{ inputs.VALUE_TO_SET }}
+          BRANCH_NAME: template/edit-${{ inputs.FILE_TO_EDIT }}
+          COMMIT_MESSAGE: Update ${{ inputs.FIELD_TO_EDIT }} in ${{ inputs.FILE_TO_EDIT }}

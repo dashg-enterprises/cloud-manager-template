@@ -1,0 +1,73 @@
+name: HCL Edit & Merge
+description: Edits templated HCL and submits PR
+inputs:
+  GITHUB_TOKEN:
+    description: 'PAT to checkout the repository to edit'
+  REPO_TO_EDIT:
+    description: 'Path to the repository to edit within the organization'
+  FILE_TO_EDIT:
+    description: 'Path to the HCL file to edit within the repo'
+  FIELD_TO_EDIT:
+    description: 'Name of the field to edit in the HCL file'
+  VALUE_TO_SET:
+    description: 'Value to set to the field that will be edited'
+  BRANCH_NAME:
+    description: 'Name to give the branch created in the target repo'
+  COMMIT_MESSAGE:
+    description: 'Message to use for the commit that makes the change'
+  REPO_LOCAL_PATH:
+    description: 'Where the cloned repo will be placed in the workflow agent'
+    default: 'target'
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.REPO_TO_EDIT }}
+        token: ${{ inputs.GITHUB_TOKEN }}
+        path: ${{ inputs.REPO_LOCAL_PATH }}
+
+    - uses: actions/setup-go@v5
+      with:
+        go-version: '^1.13.1' # The Go version to download (if necessary) and use.
+
+    - name: Get hcledit
+      shell: bash
+      run: |
+        git clone https://github.com/minamijoyo/hcledit
+        cd hcledit/
+        make install
+        hcledit version
+        cd ../
+
+    - name: Alter application image in cloud-deployment 
+      shell: bash
+      env: 
+        ORGANIZAION_NAME: ${{ inputs.ORGANIZATION_NAME }}
+        FILE_PATH: "${{ inputs.REPO_LOCAL_PATH }}/${{ inputs.FILE_TO_EDIT }}"
+      run: |
+        hcledit attribute --update --file $FILE_PATH set locals.organization_name \"$ORGANIZAION_NAME\"
+        cat $FILE_PATH
+
+    - name: Create Pull Request to cloud-deployment
+      id: cpr
+      uses: peter-evans/create-pull-request@v7
+      with:
+        branch: ${{ inputs.BRANCH_NAME }}
+        commit-message: ${{ inputs.COMMIT_MESSAGE }}
+        token: ${{ inputs.GITHUB_TOKEN }}
+        path: ${{ inputs.REPO_LOCAL_PATH }}
+  
+    - name: Output PR details
+      shell: bash
+      if: ${{ steps.cpr.outputs.pull-request-number }}
+      run: |
+        echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+        echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+
+    - name: Merge PR to cloud-deployment
+      shell: bash
+      run: gh pr merge --merge --admin ${{ steps.cpr.outputs.pull-request-number }} --repo ${{ inputs.REPO_TO_EDIT }} || true
+      env:
+        GH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
