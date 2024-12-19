@@ -3,7 +3,7 @@ name: Initialize Terraform State and Lock
 on: 
   workflow_dispatch:
     inputs:
-      ORGANIZAION_NAME:
+      ORGANIZATION_NAME:
           description: 'Name of the organization to use for the terraform state and lock'
           type: string
 

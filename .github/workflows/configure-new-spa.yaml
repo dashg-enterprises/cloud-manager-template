@@ -1,0 +1,44 @@
+name: Configure Templated SPA
+
+on: 
+  workflow_dispatch:
+    inputs:
+      ORGANIZATION_NAME:
+        description: 'Name of the organization in GitHub that will be set in the cloud-deployment and cloud-infrastructure templates'
+        type: string
+      REPO_NAME:
+        description: 'Name of the GitHub repository that will be modified and configured in cloud-deployment'
+        type: string
+      APPLICATION_NAME:
+        description: 'Name of the application as it will appear in AWS resources'
+        type: string
+        default: just-the-spot
+      DOMAIN:
+        description: 'Value of the owned domain to use for the SPA'
+        type: string
+        default: justthespot.io
+      HOSTED_ZONE_ID:
+        description: 'Id of the hosted zone associated with the above domain'
+        type: string
+        default: Z03829103FGKVJE6VHSAF
+
+
+jobs:    
+  configure-application:
+    name: Edit Templated Repository
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout cloud-manager
+      - uses: ./.github/workflows/actions/move-files-edit-and-merge
+        name: Edit cloud-deployment HCL for root
+        with: 
+          GITHUB_TOKEN: ${{ secrets.CLOUD_MANAGER_PAT }}
+          APPLICATION_REPO_NAME: ${{ inputs.REPO_NAME }}
+          APPLICATION_REPO: ${{ inputs.ORGANIZATION_NAME }}/${{ inputs.REPO_NAME }}
+          DEPLOYMENT_REPO: ${{ inputs.ORGANIZATION_NAME }}/cloud-deployment
+          INITIALIZATION_IAC_TO_EDIT: iac/initialization/main.tf
+          INITIALIZATION_IAC_EDITS: "( [hosted_zone_id]=${{ inputs.HOSTED_ZONE_ID }} [domain]=${{ inputs.DOMAIN }} )"
+          IAC_TO_EDIT: iac/spa-website.tf
+          IAC_EDITS: "( [application_name]=${{ inputs.APPLICATION_NAME }} [hosted_zone_id]=${{ inputs.HOSTED_ZONE_ID }} [domain]=${{ inputs.DOMAIN }} )"

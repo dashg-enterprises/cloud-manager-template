@@ -44,10 +44,10 @@ runs:
     - name: Alter application image in cloud-deployment 
       shell: bash
       env: 
-        ORGANIZAION_NAME: ${{ inputs.ORGANIZATION_NAME }}
+        ORGANIZATION_NAME: ${{ inputs.ORGANIZATION_NAME }}
         FILE_PATH: "${{ inputs.REPO_LOCAL_PATH }}/${{ inputs.FILE_TO_EDIT }}"
       run: |
-        hcledit attribute --update --file $FILE_PATH set locals.organization_name \"$ORGANIZAION_NAME\"
+        hcledit attribute --update --file $FILE_PATH set locals.organization_name \"$ORGANIZATION_NAME\"
         cat $FILE_PATH
 
     - name: Create Pull Request to cloud-deployment

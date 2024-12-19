@@ -3,7 +3,7 @@ name: Edit Initial Templates
 on: 
   workflow_dispatch:
     inputs:
-      ORGANIZAION_NAME:
+      ORGANIZATION_NAME:
         description: 'Name of the organization in GitHub that will be set in the cloud-deployment and cloud-infrastructure templates'
         type: string
 
