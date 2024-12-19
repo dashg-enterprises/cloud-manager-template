@@ -27,7 +27,6 @@ jobs:
   configure-application:
     name: Edit Templated Repository
     runs-on: ubuntu-latest
-    environment: dev
     steps:
       - uses: actions/checkout@v4
         name: Checkout cloud-manager
