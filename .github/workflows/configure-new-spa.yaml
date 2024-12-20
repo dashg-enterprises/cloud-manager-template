@@ -33,7 +33,7 @@ jobs:
       - uses: ./.github/workflows/actions/move-files-edit-and-merge
         name: Edit cloud-deployment HCL for root
         with: 
-          GITHUB_TOKEN: ${{ secrets.CLOUD_MANAGER_PAT }}
+          GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           APPLICATION_REPO_NAME: ${{ inputs.REPO_NAME }}
           APPLICATION_REPO: ${{ inputs.ORGANIZATION_NAME }}/${{ inputs.REPO_NAME }}
           DEPLOYMENT_REPO: ${{ inputs.ORGANIZATION_NAME }}/cloud-deployment

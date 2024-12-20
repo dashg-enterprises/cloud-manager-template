@@ -31,7 +31,7 @@ jobs:
       - uses: ./.github/workflows/actions/hcl-edit-and-merge
         name: Edit HCL
         with: 
-          GITHUB_TOKEN: ${{ secrets.CLOUD_MANAGER_PAT }}
+          GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           REPO_TO_EDIT: ${{ inputs.REPO_TO_EDIT }}
           FILE_TO_EDIT: ${{ inputs.FILE_TO_EDIT }}
           FIELD_TO_EDIT: ${{ inputs.FIELD_TO_EDIT }}
