@@ -35,19 +35,22 @@ runs:
     - name: Get hcledit
       shell: bash
       run: |
-        git clone https://github.com/minamijoyo/hcledit
-        cd hcledit/
-        make install
-        hcledit version
-        cd ../
+        if [ -d "hcledit" ]; then
+          git clone https://github.com/minamijoyo/hcledit
+          cd hcledit/
+          make install
+          hcledit version
+          cd ../
+        fi
 
     - name: Alter application image in cloud-deployment 
       shell: bash
       env: 
-        ORGANIZATION_NAME: ${{ inputs.ORGANIZATION_NAME }}
+        FIELD_TO_EDIT: ${{ inputs.FIELD_TO_EDIT }}
+        VALUE_TO_SET: ${{ inputs.VALUE_TO_SET }}
         FILE_PATH: "${{ inputs.REPO_LOCAL_PATH }}/${{ inputs.FILE_TO_EDIT }}"
       run: |
-        hcledit attribute --update --file $FILE_PATH set locals.organization_name \"$ORGANIZATION_NAME\"
+        hcledit attribute --update --file $FILE_PATH set $FIELD_TO_EDIT \"$VALUE_TO_SET\"
         cat $FILE_PATH
 
     - name: Create Pull Request to cloud-deployment
