@@ -62,27 +62,39 @@ runs:
         APPLICATION_REPO_LOCAL_PATH: ${{ inputs.APPLICATION_REPO_LOCAL_PATH }}
         DEPLOYMENT_REPO_LOCAL_PATH: ${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}
         INITIALIZATION_TEMPLATE_ORIGIN: "${{ inputs.APPLICATION_REPO_LOCAL_PATH }}/deployment-templates/initialization-template.terragrunt.hcl"
-        INITIALIZATION_TEMPLATE_DESTINATION: "${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}/live/aws/_initializations/${{ inputs.APPLICATION_REPO_NAME }}/terragrunt.hcl"
+        INITIALIZATION_TEMPLATE_DESTINATION: "${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}/live/aws/_initializations/${{ inputs.APPLICATION_REPO_NAME }}"
         TEMPLATE_ORIGIN: "${{ inputs.APPLICATION_REPO_LOCAL_PATH }}/deployment-templates/template.terragrunt.hcl"
-        TEMPLATE_DESTINATION_DEV: "${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}/live/aws/dev/applications/${{ inputs.APPLICATION_REPO_NAME }}/terragrunt.hcl"
-        TEMPLATE_DESTINATION_UAT: "${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}/live/aws/uat/applications/${{ inputs.APPLICATION_REPO_NAME }}/terragrunt.hcl"
-        TEMPLATE_DESTINATION_PROD: "${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}/live/aws/prod/applications/${{ inputs.APPLICATION_REPO_NAME }}/terragrunt.hcl"
+        TEMPLATE_DESTINATION_DEV: "${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}/live/aws/dev/applications/${{ inputs.APPLICATION_REPO_NAME }}"
+        TEMPLATE_DESTINATION_UAT: "${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}/live/aws/uat/applications/${{ inputs.APPLICATION_REPO_NAME }}"
+        TEMPLATE_DESTINATION_PROD: "${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}/live/aws/prod/applications/${{ inputs.APPLICATION_REPO_NAME }}"
       run: |
         hcledit attribute --update --file $INITIALIZATION_TEMPLATE_ORIGIN set locals.repo_path \"$APPLICATION_REPO\"
         hcledit attribute --update --file $TEMPLATE_ORIGIN set locals.repo_path \"$APPLICATION_REPO\"
         hcledit attribute --update --file $TEMPLATE_ORIGIN set locals.repo_name \"$APPLICATION_REPO_NAME\"
 
-        mv $INITIALIZATION_TEMPLATE_ORIGIN $INITIALIZATION_TEMPLATE_DESTINATION
+        mkdir $INITIALIZATION_TEMPLATE_DESTINATION || true
+        mkdir $TEMPLATE_DESTINATION_DEV || true
+        mkdir $TEMPLATE_DESTINATION_UAT || true
+        mkdir $TEMPLATE_DESTINATION_PROD || true
+
+        TERRAGRUNT_FILENAME=terragrunt.hcl
+
+        INITIALIZATION_TEMPLATE_DESTINATION_FILEPATH=$INITIALIZATION_TEMPLATE_DESTINATION/$TERRAGRUNT_FILENAME
+        TEMPLATE_DESTINATION_DEV_FILEPATH=$TEMPLATE_DESTINATION/TERRAGRUNT_FILENAME
+        TEMPLATE_DESTINATION_UAT_FILEPATH=$TEMPLATE_DESTINATION/TERRAGRUNT_FILENAME
+        TEMPLATE_DESTINATION_PROD_FILEPATH=$TEMPLATE_DESTINATION/TERRAGRUNT_FILENAME
+
+        mv $INITIALIZATION_TEMPLATE_ORIGIN INITIALIZATION_TEMPLATE_DESTINATION_FILEPATH
         mv $TEMPLATE_ORIGIN $TEMPLATE_DESTINATION_DEV
         mv $TEMPLATE_ORIGIN $TEMPLATE_DESTINATION_UAT
         mv $TEMPLATE_ORIGIN $TEMPLATE_DESTINATION_PROD
 
-        hcledit attribute --update --file $TEMPLATE_DESTINATION_DEV set locals.environment_name \"dev\"
-        hcledit attribute --update --file $TEMPLATE_DESTINATION_DEV set locals.environment_subdomain \"dev\"
-        hcledit attribute --update --file $TEMPLATE_DESTINATION_UAT set locals.environment_name \"uat\"
-        hcledit attribute --update --file $TEMPLATE_DESTINATION_UAT set locals.environment_subdomain \"uat\"
-        hcledit attribute --update --file $TEMPLATE_DESTINATION_PROD set locals.environment_name \"prod\"
-        hcledit attribute --update --file $TEMPLATE_DESTINATION_PROD set locals.environment_subdomain \"www\"
+        hcledit attribute --update --file $TEMPLATE_DESTINATION_DEV_FILEPATH set locals.environment_name \"dev\"
+        hcledit attribute --update --file $TEMPLATE_DESTINATION_DEV_FILEPATH set locals.environment_subdomain \"dev\"
+        hcledit attribute --update --file $TEMPLATE_DESTINATION_UAT_FILEPATH set locals.environment_name \"uat\"
+        hcledit attribute --update --file $TEMPLATE_DESTINATION_UAT_FILEPATH set locals.environment_subdomain \"uat\"
+        hcledit attribute --update --file $TEMPLATE_DESTINATION_PROD_FILEPATH set locals.environment_name \"prod\"
+        hcledit attribute --update --file $TEMPLATE_DESTINATION_PROD_FILEPATH set locals.environment_subdomain \"www\"
 
     - name: Configure application IaC
       shell: bash
