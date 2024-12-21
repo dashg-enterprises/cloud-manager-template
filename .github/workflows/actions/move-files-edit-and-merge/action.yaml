@@ -90,13 +90,13 @@ runs:
         INITIALIZATION_IAC_TO_EDIT: ${{ inputs.INITIALIZATION_IAC_TO_EDIT }}
         IAC_TO_EDIT: ${{ inputs.IAC_TO_EDIT }}
       run: |
-        declare -A initialization_iac_edits=${{INITIALIZATION_IAC_EDITS}};
+        declare -A initialization_iac_edits=${{ inputs.INITIALIZATION_IAC_EDITS }};
         for field in "${!initialization_iac_edits[@]}"; do
           value=${initialization_iac_edits[$field]}
           echo "Key: $field, Value: $value";
           hcledit attribute --update --file $INITIALIZATION_IAC_TO_EDIT set locals.$field \"$value\"
         done
-        declare -A iac_edits=${{IAC_EDITS}};
+        declare -A iac_edits=${{ inputs.IAC_EDITS }};
         for field in "${!iac_edits[@]}"; do
           value=${iac_edits[$field]}
           echo "Key: $field, Value: $value";
