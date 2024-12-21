@@ -22,7 +22,6 @@ on:
         type: string
         # default: Z15829103FXBVJEF3GSTY
 
-
 jobs:    
   configure-application:
     name: Edit Templated Repository

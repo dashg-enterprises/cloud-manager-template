@@ -22,7 +22,6 @@ on:
         type: string
         # default: Example
 
-
 jobs:    
   configure-application:
     name: Edit Templated Repository
