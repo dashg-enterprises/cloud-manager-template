@@ -30,7 +30,27 @@ jobs:
         with: 
           GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-deployment
-          FILE_TO_EDIT: live/aws/cloudscape/terragrunt.hcl
+          FILE_TO_EDIT: live/aws/dev/cloudscape/terragrunt.hcl
+          FIELD_TO_EDIT: locals.organization_name
+          VALUE_TO_SET: ${{ inputs.ORGANIZATION_NAME }}
+          BRANCH_NAME: template/edit-cloudscape-organization-name
+          COMMIT_MESSAGE: Update organization name for cloudscape
+      - uses: ./.github/workflows/actions/hcl-edit-and-merge
+        name: Edit cloud-deployment HCL for cloudscape
+        with: 
+          GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-deployment
+          FILE_TO_EDIT: live/aws/uat/cloudscape/terragrunt.hcl
+          FIELD_TO_EDIT: locals.organization_name
+          VALUE_TO_SET: ${{ inputs.ORGANIZATION_NAME }}
+          BRANCH_NAME: template/edit-cloudscape-organization-name
+          COMMIT_MESSAGE: Update organization name for cloudscape
+      - uses: ./.github/workflows/actions/hcl-edit-and-merge
+        name: Edit cloud-deployment HCL for cloudscape
+        with: 
+          GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-deployment
+          FILE_TO_EDIT: live/aws/prod/cloudscape/terragrunt.hcl
           FIELD_TO_EDIT: locals.organization_name
           VALUE_TO_SET: ${{ inputs.ORGANIZATION_NAME }}
           BRANCH_NAME: template/edit-cloudscape-organization-name

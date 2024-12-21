@@ -19,5 +19,5 @@ jobs:
       - name: Initialize Terraform
         run: |
           terraform init
-          terraform apply -auto-approve -var ${{ inputs.ORGANIZATION_NAME }}
+          terraform apply -auto-approve -var="organization_name=${{ inputs.ORGANIZATION_NAME }}"
         
