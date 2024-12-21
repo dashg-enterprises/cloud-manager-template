@@ -7,6 +7,9 @@ on:
           description: 'Name of the organization to use for the terraform state and lock'
           type: string
 
+env:
+  AWS_REGION: "us-east-1"
+
 jobs:    
   initialize-terraform:
     name: Run initial iac for state and lock infrastructure
@@ -16,7 +19,13 @@ jobs:
         name: Checkout cloud-manager
       - uses: hashicorp/setup-terraform@v3
         name: Install Terraform
-      - name: Initialize Terraform
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Apply Terraform to create State & Lock
         run: |
           cd iac
           terraform init
