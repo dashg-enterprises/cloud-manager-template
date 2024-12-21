@@ -68,9 +68,9 @@ runs:
         TEMPLATE_DESTINATION_UAT: "${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}/live/aws/uat/applications/${{ inputs.APPLICATION_REPO_NAME }}/terragrunt.hcl"
         TEMPLATE_DESTINATION_PROD: "${{ inputs.DEPLOYMENT_REPO_LOCAL_PATH }}/live/aws/prod/applications/${{ inputs.APPLICATION_REPO_NAME }}/terragrunt.hcl"
       run: |
-        hcledit attribute --update --file INITIALIZATION_TEMPLATE_ORIGIN set locals.repo_path \"$APPLICATION_REPO\"
-        hcledit attribute --update --file TEMPLATE_ORIGIN set locals.repo_path \"$APPLICATION_REPO\"
-        hcledit attribute --update --file TEMPLATE_ORIGIN set locals.repo_name \"$APPLICATION_REPO_NAME\"
+        hcledit attribute --update --file $INITIALIZATION_TEMPLATE_ORIGIN set locals.repo_path \"$APPLICATION_REPO\"
+        hcledit attribute --update --file $TEMPLATE_ORIGIN set locals.repo_path \"$APPLICATION_REPO\"
+        hcledit attribute --update --file $TEMPLATE_ORIGIN set locals.repo_name \"$APPLICATION_REPO_NAME\"
 
         mv $INITIALIZATION_TEMPLATE_ORIGIN $INITIALIZATION_TEMPLATE_DESTINATION
         mv $TEMPLATE_ORIGIN $TEMPLATE_DESTINATION_DEV
