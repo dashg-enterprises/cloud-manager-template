@@ -12,15 +12,15 @@ on:
       APPLICATION_NAME:
         description: 'Name of the application as it will appear in AWS resources'
         type: string
-        default: ExampleService
+        # default: ExampleService
       BOUNDED_CONTEXT_NAME:
         description: 'Name for the bounded context this application lives within'
         type: string
-        default: ExampleContext
+        # default: ExampleContext
       AGGREGATE_ROOT_NAME:
         description: 'Name of the root domain model for the application'
         type: string
-        default: Example
+        # default: Example
 
 
 jobs:    
