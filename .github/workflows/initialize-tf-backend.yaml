@@ -18,6 +18,7 @@ jobs:
         name: Install Terraform
       - name: Initialize Terraform
         run: |
+          cd iac
           terraform init
           terraform apply -auto-approve -var="organization_name=${{ inputs.ORGANIZATION_NAME }}"
         
