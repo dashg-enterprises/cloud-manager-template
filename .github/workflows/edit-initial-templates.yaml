@@ -60,7 +60,7 @@ jobs:
         with: 
           GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-infrastructure
-          FILE_TO_EDIT: iac/aws/cloudscape/locals.hcl
+          FILE_TO_EDIT: iac/aws/cloudscape/locals.tf
           FIELD_TO_EDIT: locals.organization_name
           VALUE_TO_SET: ${{ inputs.ORGANIZATION_NAME }}
           BRANCH_NAME: template/edit-cloudscape-organization-name
