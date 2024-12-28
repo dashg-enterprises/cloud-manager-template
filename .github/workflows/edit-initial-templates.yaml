@@ -6,6 +6,22 @@ on:
       ORGANIZATION_NAME:
         description: 'Name of the organization in GitHub that will be set in the cloud-deployment and cloud-infrastructure templates'
         type: string
+      WITH_EKS:
+        description: 'Whether to host an EKS cluster on your cloudscape'
+        default: false
+        type: boolean
+      WITH_NAT_GW:
+        description: 'Whether to host a NAT Gateway on your cloudscape'
+        default: true
+        type: boolean
+      WITH_API_GW:
+        description: 'Whether to host an API Gateway on your cloudscape'
+        default: false
+        type: boolean
+      API_GW_DOMAIN:
+        description: 'Domain to place API Gateway behind'
+        type: string
+        required: false
 
 jobs:    
   edit-template:
@@ -56,12 +72,53 @@ jobs:
           BRANCH_NAME: template/edit-cloudscape-organization-name
           COMMIT_MESSAGE: Update organization name for cloudscape
       - uses: ./.github/workflows/actions/hcl-edit-and-merge
-        name: Edit cloud-infrastructure HCL for cloudscape
+        name: Edit cloud-infrastructure HCL for cloudscape organization
         with: 
           GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
           REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-infrastructure
-          FILE_TO_EDIT: iac/aws/cloudscape/locals.tf
+          FILE_TO_EDIT: iac/aws/cloudscape/main.tf
           FIELD_TO_EDIT: locals.organization_name
           VALUE_TO_SET: ${{ inputs.ORGANIZATION_NAME }}
           BRANCH_NAME: template/edit-cloudscape-organization-name
           COMMIT_MESSAGE: Update organization name for cloudscape
+      - uses: ./.github/workflows/actions/hcl-edit-and-merge
+        if: ${{ inputs.API_GW_DOMAIN != '' }}
+        name: Edit cloud-infrastructure HCL for cloudscape domain
+        with: 
+          GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-infrastructure
+          FILE_TO_EDIT: iac/aws/cloudscape/main.tf
+          FIELD_TO_EDIT: locals.environment_domain
+          VALUE_TO_SET: ${{ inputs.API_GW_DOMAIN }}
+          BRANCH_NAME: template/edit-cloudscape-domain-name
+          COMMIT_MESSAGE: Update domain name for cloudscape
+      - uses: ./.github/workflows/actions/hcl-edit-and-merge
+        name: Edit cloud-infrastructure HCL for cloudscape with_eks flag
+        with: 
+          GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-infrastructure
+          FILE_TO_EDIT: iac/aws/cloudscape/main.tf
+          FIELD_TO_EDIT: locals.with_eks
+          VALUE_TO_SET: ${{ inputs.WITH_EKS }}
+          BRANCH_NAME: template/edit-cloudscape-with-eks
+          COMMIT_MESSAGE: Update with_eks flag for cloudscape
+      - uses: ./.github/workflows/actions/hcl-edit-and-merge
+        name: Edit cloud-infrastructure HCL for cloudscape with_api_gw flag
+        with: 
+          GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-infrastructure
+          FILE_TO_EDIT: iac/aws/cloudscape/main.tf
+          FIELD_TO_EDIT: locals.with_api_gw
+          VALUE_TO_SET: ${{ inputs.WITH_API_GW }}
+          BRANCH_NAME: template/edit-cloudscape-with-api-gw
+          COMMIT_MESSAGE: Update with_api_gw flag for cloudscape
+      - uses: ./.github/workflows/actions/hcl-edit-and-merge
+        name: Edit cloud-infrastructure HCL for cloudscape with_nat_gw flag
+        with: 
+          GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          REPO_TO_EDIT: ${{ inputs.ORGANIZATION_NAME }}/cloud-infrastructure
+          FILE_TO_EDIT: iac/aws/cloudscape/main.tf
+          FIELD_TO_EDIT: locals.with_nat_gw
+          VALUE_TO_SET: ${{ inputs.WITH_NAT_GW }}
+          BRANCH_NAME: template/edit-cloudscape-with-nat-gw
+          COMMIT_MESSAGE: Update with_nat_gw for cloudscape

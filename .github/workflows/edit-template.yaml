@@ -9,7 +9,7 @@ on:
           type: string
       FILE_TO_EDIT:
           description: 'Path to the HCL file to edit within the repo'
-          default: iac/aws/cloudscape/locals.tf
+          default: iac/aws/cloudscape/main.tf
           type: string
       FIELD_TO_EDIT:
           description: 'Name of the field to edit in the HCL file'
