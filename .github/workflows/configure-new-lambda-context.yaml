@@ -1,0 +1,42 @@
+name: Configure Templated ECS Bounded Context
+
+on: 
+  workflow_dispatch:
+    inputs:
+      ORGANIZATION_NAME:
+        description: 'Name of the organization in GitHub that will be set in the cloud-deployment and cloud-infrastructure templates'
+        type: string
+      REPO_NAME:
+        description: 'Name of the GitHub repository that will be modified and configured in cloud-deployment'
+        type: string
+      APPLICATION_NAME:
+        description: 'Name of the application as it will appear in AWS resources'
+        type: string
+        # default: ExampleService
+      BOUNDED_CONTEXT_NAME:
+        description: 'Name for the bounded context this application lives within'
+        type: string
+        # default: ExampleContext
+      AGGREGATE_ROOT_NAME:
+        description: 'Name of the root domain model for the application'
+        type: string
+        # default: Example
+
+jobs:    
+  configure-application:
+    name: Edit Templated Repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout cloud-manager
+      - uses: ./.github/workflows/actions/move-files-edit-and-merge
+        name: Edit cloud-deployment HCL for root
+        with: 
+          GITHUB_TOKEN: ${{ secrets.CLOUD_DEPLOYMENT_PAT }}
+          APPLICATION_REPO_NAME: ${{ inputs.REPO_NAME }}
+          APPLICATION_REPO: ${{ inputs.ORGANIZATION_NAME }}/${{ inputs.REPO_NAME }}
+          DEPLOYMENT_REPO: ${{ inputs.ORGANIZATION_NAME }}/cloud-deployment
+          INITIALIZATION_IAC_TO_EDIT: iac/initialization/main.tf
+          INITIALIZATION_IAC_EDITS: "( [bounded_context_name]=${{ inputs.BOUNDED_CONTEXT_NAME }} )"
+          IAC_TO_EDIT: iac/main.tf
+          IAC_EDITS: "( [application_name]=${{ inputs.APPLICATION_NAME }} [bounded_context_name]=${{ inputs.BOUNDED_CONTEXT_NAME }} [aggregate_root_name]=${{ inputs.AGGREGATE_ROOT_NAME }} )"
